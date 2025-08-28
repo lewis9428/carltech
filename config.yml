@@ -1,0 +1,501 @@
+# Complete config.yml (merged values + defaults)
+# Comments explain each key and example values. Change values to suit your environment.
+
+# Environment: "production" or "development"
+NODE_ENV: "development"           # "production" = quiet by default; "development" = verbose
+
+# LOG_LEVEL supports two modes:
+# 1) Single token (threshold): "info" => emits info, warn, error, fatal (level and above)
+# 2) Comma-separated whitelist: "error,warn,fatal" => only the listed levels will be emitted
+# Examples:
+# LOG_LEVEL: "info"                     # threshold mode (info and above)
+# LOG_LEVEL: "warn"                     # threshold mode (warn and above)
+# LOG_LEVEL:          # explicit whitelist ( error, warn and fatal)
+LOG_LEVEL: "info"
+
+# Where to write logs (relative to process.cwd() or absolute path)
+LOG_DIR: "logs"
+
+# Filenames for rotated/archived logs (production/dev)
+PROD_LOG_FILENAME: "prod.log"
+DEV_LOG_FILENAME: "dev.log"
+
+# Rotation / retention settings (used by pino-roll when available)
+# Frequency examples: "daily", "weekly", "hourly"
+LOG_ROTATION_FREQUENCY: "weekly"
+# Max file size before rotation (example formats: "10M", "100M")
+LOG_ROTATION_SIZE: "10M"
+
+# Optional: whether to log DB queries or similar (used by your app if implemented)
+LOG_QUERIES: false
+
+# Sentry (optional)
+# Provide your DSN here to enable Sentry integration (leave empty or null to disable).
+# Example DSN format: "https://<public>@o0.ingest.sentry.io/0"
+SENTRY_DSN: ""                      # e.g. "https://xxxxx.ingest.sentry.io/12345"
+# Fraction of traces to send to Sentry (0.0 - 1.0)
+SENTRY_TRACES_SAMPLE_RATE: 0.5
+
+# Notes:
+# - If NODE_ENV is "production" and LOG_LEVEL is omitted, the logger will default
+#   to a conservative behavior (warn+). You can override by explicitly setting LOG_LEVEL.
+# - LOG_LEVEL as a comma list is parsed as a whitelist (order doesn't matter).
+#   Example: LOG_LEVEL: "error,warn" will only allow warn & error logs.
+# - Ensure the process has write permissions to LOG_DIR; the logger will try to create it.
+
+
+# Loader / Modules
+MODULES_DIRECTORY: carl/sub
+BOOKIES_DIR_NAME: carl
+MODULE_CONCURRENCY_LIMIT: 1
+ALLOWED_MODULE_EXTENSIONS:
+  - ".js"
+MAX_MODULE_FILE_SIZE_WARN_BYTES: 1048576
+MAX_HANDLERS_WARNING_THRESHOLD: 100
+MODULE_RELOAD_DEBOUNCE_MS: 300
+HEALTH_CHECK_INTERVAL_MS: 6000000000
+HIGH_MEMORY_USAGE_WARN_MB: 50
+CRITICAL_MEMORY_USAGE_MB: 100
+KILL_ON_HIGH_MEMORY: false
+MODULE_STATS_INTERVAL_MS: 3000000000
+BOT_HOOKS_KEY_SYMBOL: "@@myBotHooksAttached"
+
+# Database
+# db-config.yml
+
+# Database Configuration
+DB_PATH: "./data/db"
+DB_NAME: "bot.db"
+DB_CACHE_SIZE: 10000
+DB_DURABILITY: "high"  # Options: 'high', 'normal'
+DB_BATCH_SIZE: 100
+
+
+# Bot + Server
+
+
+TIMEZONE: Africa/Nairobi
+
+
+# Extra WhatsApp / Baileys options
+BAILEYS_BROWSER:
+  - "Safari"
+  - "Chrome"
+  - "119.0.6045.199"
+GROUP_ADMIN_CACHE_MAX_ENTRIES: 500
+GROUP_ADMIN_CACHE_TTL_MS: 60000
+
+
+
+
+# --- Cache Settings ---
+# Time-to-live for cache entries in milliseconds.
+CACHE_TTL_MS: 60000
+# Maximum number of entries the cache can hold.
+CACHE_MAX_SIZE: 1000
+
+# --- Store Settings ---
+# If true, disables the in-memory store for chats and contacts.
+DISABLE_IN_MEMORY_STORE: false
+
+# --- Authentication Settings ---
+# Directory where authentication state files (creds, keys) will be stored.
+# This path is resolved relative to PROJECT_ROOT.
+AUTH_STATE_DIR: "auth"
+
+# --- Rate Limiting for Outgoing Messages ---
+# Defines the window (in ms) and limit (number of messages) for rate limiting.
+RATE_LIMIT:
+  - window: 1000  # Time window in milliseconds (e.g., 1000ms = 1 second)
+    limit: 5      # Maximum number of messages allowed within the window
+
+# --- Outgoing Message Queue Settings ---
+# Maximum number of messages that can be queued for sending.
+OUTGOING_MAX_QUEUE: 2000
+# Number of retry attempts for sending messages before failing.
+SEND_RETRY_ATTEMPTS: 2
+# Base delay in milliseconds for exponential backoff during send retries.
+SEND_RETRY_BASE_MS: 500
+
+# --- Link Preview Generation Settings ---
+# List of hostnames to block from generating link previews (e.g., ['badsite.com']).
+# If PREVIEW_ALLOWLIST is set, this is ignored.
+PREVIEW_BLOCKLIST: [] # Example: ["example.com", "malicious.net"]
+# List of hostnames to allow for link preview generation. If set, only these are allowed.
+# If null, all not in BLOCKLIST are allowed.
+PREVIEW_ALLOWLIST: ["https://t.me/TheCarlTech"] # Example: ["whatsapp.com", "google.com"]
+# Number of retry attempts for fetching link previews.
+PREVIEW_RETRY_ATTEMPTS: 2
+# Timeout in milliseconds for fetching a link preview.
+PREVIEW_TIMEOUT_MS: 3000
+# Time-to-live for cached link previews in milliseconds.
+PREVIEW_CACHE_TTL_MS: 3600000 # 1 hour
+
+# --- Contact & Chat Cache Settings ---
+# Time-to-live for contact entries in cache in milliseconds.
+CONTACT_CACHE_TTL_MS: 3600000 # 1 hour
+# Time-to-live for chat entries in cache in milliseconds.
+CHAT_CACHE_TTL_MS: 1800000 # 30 minutes
+
+# --- Health Server Settings ---
+# Port number for the health and metrics server.
+HEALTH_PORT: 3002
+
+# --- Shutdown Settings ---
+# Time in milliseconds to wait for outgoing queue to drain during graceful shutdown.
+SHUTDOWN_DRAIN_MS: 5000
+
+# --- Dead Letter Queue (DLQ) Settings ---
+# Path to the Dead Letter Queue file.
+DLQ_PATH: "dlq.jsonl"
+# Maximum size of the DLQ file in bytes before rotation.
+DLQ_MAX_SIZE: 100000000000000
+# Maximum number of rotated DLQ files to keep.
+DLQ_MAX_FILES: 1
+
+# --- Baileys Specific Settings ---
+# If true, generates high-quality link previews (may use more resources).
+GENERATE_HIGH_QUALITY_LINK_PREVIEW: false
+
+# --- Project & Command Settings ---
+# Root directory of the project (defaults to process.cwd() if not set).
+#PROJECT_ROOT: "/app" # Example: /home/ubuntu/mybot
+# Command prefix(es) for the bot. Can be a single string, an array of strings, or null (no prefix).
+# If null, commands are triggered by the first word matching a registered command.
+COMMAND_PREFIX: "." # Example: "!", ["/", "!", "."] or null
+# Administrator token for admin-only actions (e.g., restarting the bot via API).
+# Defaults to process.env.ADMIN_TOKEN if not set here.
+#ADMIN_TOKEN: "your_secret_admin_token_here" # It's recommended to use environment variables for this.
+
+# --- Logging Settings ---
+# Default log level for the application. Options: trace, debug, info, warn, error, fatal, silent.
+
+# LOCKS module
+LOCKS:
+  DEFAULT_ENABLED: true
+  SEND_WARNING: true
+  WARNING_MESSAGE: "⚠️ {user}, that word is not allowed."
+  WARNING_TTL_MS: 500000
+  PER_CHAT_QUEUE_LIMIT: 500
+  BATCH_SIZE: 5
+  BATCH_DELAY_MS: 500
+  GLOBAL_CONCURRENCY: 3
+  GROUPS: {}
+
+# STATUS BROADCAST (deletion queue) settings
+STATUS_BROADCAST_DEFAULT_ENABLED: true
+STATUS_BROADCAST:
+  PER_CHAT_QUEUE_LIMIT: 500
+  BATCH_SIZE: 5
+  BATCH_DELAY_MS: 300
+  GLOBAL_CONCURRENCY: 2
+
+# ADDITIONS module
+ADDITIONS:
+  DEFAULT_ENABLED: true
+  DEBOUNCE_MS: 4000
+  SEND_IN_GROUP: false
+
+# Top-level groups map (empty by default) not used
+GROUPS: {}
+
+
+# Optional Sentry / DB connection (leave commentedy or set via env)
+#SENTRY_DSN: null
+#DATABASE_URL: null
+#DB_SSL_MODE: null
+
+# Other miscellaneous/legacy keys (kept for completeness)
+LOG_ROTATION_SIZE_BYTES: "10M"   # informational alias if needed
+
+
+# Configuration for the delete-recovery module
+# All settings are optional. If not set, the module uses its internal fallbacks.
+
+# Enable or disable the message recovery feature.
+# Set to 'true' to have the bot send recovered messages.
+# Default: false
+DEFAULT_SEND_DELETE: true
+
+# The JID (WhatsApp ID) to which recovered messages will be sent.
+# If not set, messages are sent to the bot's own JID.
+# Example: '1234567890@s.whatsapp.net' or '1234567890-123456@g.us'
+DELETE_TARGET_JID: "120363380722467155@g.us"
+# The delay in milliseconds before sending a batch of recovered messages.
+# This helps prevent message flooding.
+# Default: 3000 (3 seconds)
+DELETE_DEBOUNCE_MS: 3000
+
+# The maximum number of concurrent processes for saving and deleting messages.
+# Default: 3
+DELETE_CONCURRENCY: 5
+
+# The directory name to store recovered media files.
+# This directory will be created inside the 'data/delete' folder.
+Default: 'media'
+DELETE_MEDIA_DIRNAME: 'media'
+
+# The delay in milliseconds between sending each recovered media file.
+# This is to avoid triggering rate limits.
+# Default: 300 (0.3 seconds)
+DELETE_MEDIA_SEND_DELAY_MS: 300
+
+# The interval in milliseconds for the automatic cleanup of old messages.
+# Messages older than one week are deleted.
+# Default: 86400000 (24 hours)
+DELETE_CLEANUP_INTERVAL_MS: 86400000
+
+# watchers
+z.boolean().default(true)DELETE_ATTACH_WATCHER_MS: 3000
+DELETE_SOCK_MONITOR_MS: 1000
+
+
+DELETE_MAX_SEND_RETRIES: 4
+DELETE_INITIAL_BACKOFF_MS: 600
+
+
+HELP_SILENT_DENY: true
+
+#viewonce
+VIEW_ONCE_TARGET_JID: "120363380722467155@g.us" # Replace with your target group's JID
+VIEWONCE_SKIP_IF_TARGET_EQUALS_SOURCE: true
+# View-Once Module Settings
+
+# Optional: Watcher and Cleanup settings
+VIEWONCE_ATTACH_WATCHER_MS: 3000
+VIEWONCE_SOCK_MONITOR_MS: 1000
+VIEWONCE_SENT_CLEANUP_DAYS: 7
+VIEWONCE_SENT_CLEANUP_INTERVAL_MS: 86400000
+
+
+
+#scheduler
+SCHED_CHECK_INTERVAL_MS: 30000
+SCHED_DEFAULT_TIMEZONE: Africa/Nairobi
+SCHED_SEND_RETRIES: 5
+SCHED_INITIAL_BACKOFF_MS: 1000
+
+#welcome
+WELCOME:
+  DEFAULT_ENABLED: true
+  GROUP_SIZE_CACHE_TTL_MS: 300000
+  WHATSAPP_GROUP_MAX: 2049
+  DEBOUNCE_MS: 1000
+  ATTACH_WATCHER_MS: 5000
+  SOCK_MONITOR_MS: 2000
+
+
+
+# Antilink Module Configuration
+# This section defines how the antilink feature in your bot behaves.
+
+
+# Antilink Module Configuration
+#
+# This section configures the 'antilink' module, which aims to
+# prevent link sharing in group chats, track user warnings, and
+# optionally remove users who exceed a configured warning limit.
+#
+# All values here override the default settings defined in the module.
+ANTILINK:
+  # Enable or disable the antilink module by default.
+  # If set to false, the module will not process any messages.
+  DEFAULT_ENABLED: true
+
+  # Whether to send a warning message to the user when a link is detected.
+  SEND_WARNING: true
+
+  # The message template to send as a warning.
+  # Placeholders:
+  #   {user}     -> @username (mention)
+  #   {count}    -> current warning count for the user
+  #   {warnings} -> remaining warnings before potential removal
+  WARNING_MESSAGE: '🔗 {user}, links are not allowed here. Remaining warnings {warnings}'
+
+  # The time in milliseconds after which a sent warning message will be
+  # automatically deleted from the chat. Set to 0 to disable auto-deletion.
+  WARNING_TTL_MS: 5000 # 5 seconds
+
+  # A list of whitelisted entities (users or text snippets).
+  # - User IDs (e.g., '1234567890@s.whatsapp.net') will bypass antilink checks.
+  # - Text snippets (e.g., '.mywhitelistword') will allow messages containing
+  #   that snippet to bypass checks. Full link URLs are also possible.
+  WHITE_LIST: [] # Example: ['1234567890@s.whatsapp.net', '.mysite.com']
+
+  # The maximum number of messages to process for deletion in a single batch
+  # per chat. This helps manage message processing load.
+  BATCH_SIZE: 10
+
+  # The delay in milliseconds between processing successive batches for
+  # deletion within a single chat. This prevents flooding the API.
+  BATCH_DELAY_MS: 800 # 0.8 seconds
+
+  # The maximum number of chats that can be processed concurrently.
+  # This limits global API call rate to prevent hitting rate limits.
+  GLOBAL_CONCURRENCY: 2
+
+  # The number of times to retry deleting a message if it fails.
+  DELETE_RETRY_COUNT: 3
+
+  # The initial backoff delay in milliseconds before the first retry
+  # of a message deletion. This delay will double on each subsequent retry.
+  DELETE_RETRY_INITIAL_BACKOFF_MS: 400 # 0.4 seconds
+
+  # The maximum number of deletion requests that can be queued per chat.
+  # If the queue exceeds this limit, the oldest message will be removed.
+  PER_CHAT_QUEUE_LIMIT: 1000
+
+  # The time in milliseconds to remember a message as "processed" to avoid
+  # duplicate handling if the same message is received multiple times.
+  DEDUPE_TTL_MS: 5000 # 5 seconds
+
+  # The maximum number of warnings a user can accumulate before
+  # action (e.g., removal) is taken. Must be 1 or greater.
+  MAX_WARNINGS: 3
+
+  # The time in milliseconds after which a user's warning count resets.
+  # Set to 0 to make warnings permanent (never reset).
+  WARN_RESET_MS: 0 # Warnings are permanent by default
+
+  # If set to true, the user will be removed from the group upon reaching
+  # the MAX_WARNINGS limit.
+  REMOVE_ON_MAX: true
+
+  # An array of messages to send after a user has been successfully removed
+  # due to exceeding MAX_WARNINGS. Messages are sent in a round-robin fashion
+  # per chat.
+  # Placeholders:
+  #   {user}     -> @username (mention)
+  #   {count}    -> final warning count of the user
+  #   {warnings} -> remaining warnings (will be 0 after removal)
+  EXPRESSIONS:
+    - '🚨 {user} has been removed for repeatedly sharing links. Keep our chat clean!'
+    - '👋 Goodbye, {user}! This chat is not for promotional links.'
+    - '🚫 Rules are important. {user} has been automatically removed for {count} link violations.'
+    - '🧹 Cleaning up the chat. {user} has been shown the door due to link sharing.'
+    - '⛓️ No links allowed here. {user} has been removed.'
+
+
+
+
+# Spam Detector Module Configuration
+#
+# This section configures the 'spam' module, designed to detect and
+# respond to rapid, consecutive messages (spam) from the same user
+# in group chats. It tracks warnings persistently in a database and
+# can optionally kick users who exceed a defined warning threshold.
+#
+# All values here override the default settings defined in the module.
+SPAM:
+  # Enable or disable the spam detection module.
+  # If set to false, the module will not track or act on spam.
+  ENABLED: true
+
+  # The number of messages considered as spam if sent within the
+  # 'SPAM_WINDOW_MS'.
+  SPAM_THRESHOLD: 5
+
+  # The time window in milliseconds during which messages are counted
+  # towards the 'SPAM_THRESHOLD'.
+  SPAM_WINDOW_MS: 4000 # 4 seconds
+
+  # The cooldown period in milliseconds after a warning is issued to a user.
+  # During this period, the user will not receive another warning for spam,
+  # even if they continue to hit the spam threshold.
+  SPAM_COOLDOWN_MS: 5000 # 5 seconds
+
+  # The maximum number of spam warnings a user can accumulate before
+  # further action (e.g., kicking) is taken.
+  MAX_WARNINGS: 3
+
+  # The time in milliseconds after which a user's stored spam warnings will
+  # expire in the database. Warnings older than this duration are reset to 0.
+  WARN_EXPIRY_MS: 604800000 # 7 days (7 * 24 * 60 * 60 * 1000 ms)
+
+  # If set to true, the user will be removed (kicked) from the group
+  # when they reach or exceed 'MAX_WARNINGS'.
+  KICK_ON_SPAM: true
+
+  # The message template to send as a warning to a spamming user.
+  # Placeholders:
+  #   {user}     -> @username (mention)
+  #   {warnings} -> remaining warnings before potential kick
+  WARNING_MESSAGE: '⚠️ {user}, please stop spamming. Remaining warnings: {warnings}'
+
+  # The time in milliseconds after which the sent warning message will be
+  # automatically deleted from the chat. Set to 0 to disable auto-deletion.
+  WARNING_TTL_MS: 5000 # 5 seconds
+
+  # The delay in milliseconds between processing individual actions
+  # (e.g., sending a warning, kicking) to avoid sending too many
+  # messages in a short burst.
+  SEND_DELAY_MS: 300
+
+  # The maximum number of messages to process for spam detection in a single
+  # batch per chat. This helps manage message processing load.
+  BATCH_SIZE: 8
+
+  # The delay in milliseconds between processing successive batches of messages
+  # within a single chat. This prevents flooding the API.
+  BATCH_DELAY_MS: 800 # 0.8 seconds
+
+  # The maximum number of chats that can be processed concurrently for spam.
+  # This limits the global API call rate to prevent hitting rate limits.
+  GLOBAL_CONCURRENCY: 2
+
+  # The maximum number of messages that can be queued per chat for spam analysis.
+  # If the queue exceeds this limit, the oldest message will be removed.
+  PER_CHAT_QUEUE_LIMIT: 1000
+
+  # LINK_REGEX: null # This configuration is commented out as it's not currently used in spam.js
+
+
+
+# Filter Module Configuration
+#
+# This section configures the 'filter' module, which provides
+# robust, database-backed message filtering with custom responses
+# in group chats and via private commands. It supports commands
+# like 'filter', 'listfilter', and 'delfilter'.
+#
+# All values here override the default settings defined in the module.
+FILTERS:
+  # The duration in milliseconds for which the bot will simulate typing
+  # (or 'composing') before sending a filter response. This is read
+  # exclusively from config, with no internal default.
+  # Set to 0 to disable typing simulation. Clamped between 0 and 15000 ms.
+  # Example: 1000 for a 1-second typing simulation.
+  TYPING_SIM_MS: 1000 # Example: 1 second
+
+  # The mode to use when multiple responses are configured for a single filter trigger.
+  # Options:
+  #   'roundrobin': Cycles through responses sequentially (default).
+  #   'random': Picks a response randomly.
+  RESPONSE_MODE: 'roundrobin' # Can also be 'random'
+
+  # Note: The filter module does not have a separate 'ENABLED' flag as
+  # its functionality is primarily driven by the presence of filters
+  # in the database and command usage.
+  #
+  # Other settings like `BATCH_SIZE`, `BATCH_DELAY_MS`, `GLOBAL_CONCURRENCY`,
+  # and `PER_CHAT_QUEUE_LIMIT` are not directly configurable via the FILTERS
+  # section as they are managed by the loader's overarching queueing system.
+
+WARN_SYSTEM:
+  # Max warnings allowed before auto-kick
+  MAX_WARNS: 3
+
+  # Message template sent when warning is issued
+  WARNMESSAGE: |
+    ⚠️ WARN MESSAGE ⚠️
+
+    USER: {user}
+    MAX WARNINGS: {maxwarns}
+    REMAINING WARNINGS: {remaining_warns}
+    REASON: {reason}
+
+  # Default reason if no reason is provided
+  DEFAULT_REASON: "Breaking group rules."
+
+  # Whether to include the triggering word/file in the reason
+  SHOWTRIGGERIN_REASON: true

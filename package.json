@@ -1,0 +1,37 @@
+{
+  "name": "wp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "type": "module",
+  "dependencies": {
+    "@sentry/node": "^10.5.0",
+    "@whiskeysockets/baileys": "^6.7.18",
+    "chokidar": "^4.0.3",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.1",
+    "javascript-obfuscator": "^4.1.1",
+    "jimp": "^0.16.1",
+    "js-yaml": "^4.1.0",
+    "link-preview-js": "^3.1.0",
+    "luxon": "^3.7.1",
+    "node-cache": "^5.1.2",
+    "p-limit": "^7.0.0",
+    "pino": "^9.9.0",
+    "pino-roll": "^3.1.0",
+    "prom-client": "^15.1.3",
+    "qrcode-terminal": "^0.12.0",
+    "quick-lru": "^7.0.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "zod": "^4.0.17"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "pino-pretty": "^13.1.1"
+  }
+}
